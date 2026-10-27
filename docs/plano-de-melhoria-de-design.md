@@ -153,7 +153,7 @@ Estilo de texto: títulos e botões em Title Case com verbo específico ("Enviar
 - Confirmação de e-mail como `Alert` informativo, não como erro.
 
 ### Documentos (referência: Google Drive)
-- Lista com ícone por tipo (PDF vermelho, DOCX azul, TXT/MD neutro), nome e uma linha de metadados: tamanho · quem enviou · data.
+- Lista com ícone por tipo (PDF vermelho, Word azul, Excel e CSV verde, PowerPoint laranja, XML e TXT/MD neutro), nome e uma linha de metadados: tamanho · quem enviou · data.
 - Menos colunas: nome, status, trechos, ações. **Cartões empilhados no celular** em vez de tabela com rolagem.
 - Selo de status com cor e ícone: verde (pronto), azul girando (preparando), vermelho (não foi possível ler).
 - Motivo da falha **visível na própria linha**, com o botão "Processar de novo".

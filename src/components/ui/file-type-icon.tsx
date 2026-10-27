@@ -1,9 +1,14 @@
-import { FileText, FileType2, type LucideIcon } from 'lucide-react'
+import { FileCode2, FileSpreadsheet, FileText, FileType2, Presentation, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+const sheet = { icon: FileSpreadsheet, className: 'bg-success/12 text-success' }
 const kinds: Record<string, { icon: LucideIcon; className: string }> = {
   pdf: { icon: FileType2, className: 'bg-destructive/10 text-destructive' },
   docx: { icon: FileText, className: 'bg-brand-soft text-primary' },
+  xlsx: sheet,
+  csv: sheet,
+  pptx: { icon: Presentation, className: 'bg-warning/15 text-warning' },
+  xml: { icon: FileCode2, className: 'bg-muted text-muted-foreground' },
 }
 const fallback = { icon: FileText, className: 'bg-muted text-muted-foreground' }
 

@@ -1,6 +1,6 @@
 # RAG Docs
 
-Sistema web de RAG: as pessoas enviam documentos (PDF, DOCX, TXT, MD), escolhem como o texto é fatiado, e depois fazem perguntas em linguagem natural que devolvem os trechos mais relevantes. Os documentos são compartilhados entre todos os usuários logados.
+Sistema web de RAG: as pessoas enviam documentos (PDF, Word, Excel, PowerPoint, CSV, XML, TXT, MD), escolhem como o texto é fatiado, e depois fazem perguntas em linguagem natural que devolvem os trechos mais relevantes. Os documentos são compartilhados entre todos os usuários logados.
 
 **Stack:** React 19 + Vite + TypeScript, shadcn/ui (base-nova) + Tailwind v4, TanStack Query, react-hook-form + zod. Backend em Supabase: Auth, Storage, Postgres com pgvector, Edge Functions e pg_cron. Embeddings pela OpenAI (`text-embedding-3-small`, 1536 dimensões).
 
@@ -51,7 +51,7 @@ Cada etapa lista o que foi feito, as decisões e como conferir. O projeto Supaba
 
 - Telas: Login, Cadastro, Upload com configuração de fatiamento, Lista de documentos e Busca.
 - Tudo atrás de `AuthService`, `DocumentService` e `SearchService` (em `src/services`), com implementação mock em `localStorage`.
-- Upload: presets de fatiamento (Documento longo 1000 tokens/15%, Técnico 500/20%, Conversacional 300/10%) mais campos avançados, com pré-visualização dos chunks. Limites: 20 MB, extensões pdf/docx/txt/md.
+- Upload: presets de fatiamento (Documento longo 1000 tokens/15%, Técnico 500/20%, Conversacional 300/10%) mais campos avançados, com pré-visualização dos chunks. Limites: 20 MB, extensões pdf, docx, xlsx, pptx, csv, xml, txt e md (os formatos antigos .xls, .ppt e .doc são recusados com orientação para converter).
 - Lista acompanha sozinha (polling de 2 s) enquanto houver documento em `processing`.
 
 ## Etapa 2: Auth no Supabase
@@ -76,7 +76,7 @@ Cada etapa lista o que foi feito, as decisões e como conferir. O projeto Supaba
 **Edge Function `process-document`** (`verify_jwt`, CORS, confere que quem chamou é o dono):
 
 1. Responde 202 e continua em segundo plano (`EdgeRuntime.waitUntil`).
-2. Baixa o arquivo com a service role e extrai o texto: PDF com `unpdf`, DOCX lendo `word/document.xml` com `fflate`, TXT/MD direto.
+2. Baixa o arquivo com a service role e extrai o texto: PDF com `unpdf`; DOCX, XLSX e PPTX lendo o XML interno do zip com `fflate`; CSV, XML, TXT e MD direto (o CSV aceita `,` `;` e tabulação, em UTF-8 ou Windows-1252). Planilhas e CSV viram "Coluna: valor; Coluna: valor" por linha, com o nome da aba; PPTX vira "Slide N" mais as notas; XML vira "elemento: valor". A extração fica em `supabase/functions/process-document/extract.ts`.
 3. Fatia: tamanho e sobreposição em tokens (≈ 4 caracteres por token, a mesma conta do preview). `fixed` = janelas fixas; `paragraph` = junta parágrafos até o tamanho; `semantic` = agrupa frases (não há modelo de tópicos por trás). Limite de 2000 chunks por documento.
 4. Gera embeddings em lotes de 100 e grava os chunks.
 5. Marca `ready` com `chunk_count`, ou `failed` com a mensagem de erro (e apaga chunks parciais).

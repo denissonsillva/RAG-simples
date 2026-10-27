@@ -24,6 +24,7 @@ import { FileDropzone } from './FileDropzone'
 import { useUploadDocument } from './hooks'
 import {
   ACCEPTED_EXTENSIONS,
+  LEGACY_EXTENSIONS,
   chunkPresets,
   presetOverlap,
   uploadSchema,
@@ -110,7 +111,7 @@ export function UploadPage() {
               <FileDropzone
                 file={file}
                 onFile={onFile}
-                accept={ACCEPTED_EXTENSIONS.map((e) => `.${e}`).join(',')}
+                accept={[...ACCEPTED_EXTENSIONS, ...Object.keys(LEGACY_EXTENSIONS)].map((e) => `.${e}`).join(',')}
                 error={fileError}
               />
             </section>

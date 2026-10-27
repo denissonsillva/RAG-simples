@@ -3,6 +3,7 @@ import { useId, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { FileTypeIcon } from '@/components/ui/file-type-icon'
 import { formatBytes } from '@/lib/format'
+import { FORMATS_LABEL } from './schemas'
 import { cn } from '@/lib/utils'
 
 interface FileDropzoneProps {
@@ -91,7 +92,7 @@ export function FileDropzone({ file, onFile, accept, error }: FileDropzoneProps)
             <span className="block font-medium">Arraste um arquivo para cá</span>
             <span className="block text-primary underline underline-offset-4">ou escolha no seu computador</span>
           </span>
-          <span className="text-sm text-muted-foreground">PDF, DOCX, TXT ou MD · até 20 MB</span>
+          <span className="text-sm text-muted-foreground">{FORMATS_LABEL} · até 20 MB</span>
         </label>
       )}
 

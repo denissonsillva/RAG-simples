@@ -1,6 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
-import { extractText, getDocumentProxy } from 'npm:unpdf@1.4.0'
-import { unzipSync, strFromU8 } from 'npm:fflate@0.8.2'
+import { extract } from './extract.ts'
 
 const EMBEDDING_MODEL = 'text-embedding-3-small' // 1536 dimensões = vector(1536)
 const CHARS_PER_TOKEN = 4 // mesma conta do preview da tela
@@ -19,28 +18,6 @@ const cors = {
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } })
-
-// ---------- extração ----------
-
-async function extract(bytes: Uint8Array, name: string): Promise<string> {
-  const ext = name.split('.').pop()?.toLowerCase()
-  if (ext === 'txt' || ext === 'md') return new TextDecoder().decode(bytes)
-  if (ext === 'pdf') {
-    const pdf = await getDocumentProxy(bytes)
-    const { text } = await extractText(pdf, { mergePages: true })
-    return text
-  }
-  if (ext === 'docx') {
-    const xml = strFromU8(unzipSync(bytes, { filter: (f) => f.name === 'word/document.xml' })['word/document.xml'])
-    return xml
-      .replace(/<\/w:p>/g, '\n\n')
-      .replace(/<w:tab\/>/g, '\t')
-      .replace(/<w:br\/>/g, '\n')
-      .replace(/<[^>]+>/g, '')
-      .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
-  }
-  throw new Error('Formato não suportado.')
-}
 
 // ---------- fatiamento ----------
 

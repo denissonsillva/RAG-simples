@@ -2,7 +2,14 @@ import { z } from 'zod'
 import type { ChunkStrategy } from '@/services'
 
 export const MAX_FILE_BYTES = 20 * 1024 * 1024
-export const ACCEPTED_EXTENSIONS = ['pdf', 'docx', 'txt', 'md']
+export const ACCEPTED_EXTENSIONS = ['pdf', 'docx', 'xlsx', 'pptx', 'csv', 'xml', 'txt', 'md']
+/** Formatos antigos: aceitos na escolha do arquivo só para explicar como converter. */
+export const LEGACY_EXTENSIONS: Record<string, { to: string; app: string }> = {
+  xls: { to: 'xlsx', app: 'Excel' },
+  ppt: { to: 'pptx', app: 'PowerPoint' },
+  doc: { to: 'docx', app: 'Word' },
+}
+export const FORMATS_LABEL = 'PDF, Word, Excel, PowerPoint, CSV, XML, TXT ou MD'
 
 export const uploadSchema = z
   .object({
@@ -26,7 +33,9 @@ export type UploadFormValues = z.infer<typeof uploadSchema>
 export function validateFile(file: File | null): string | null {
   if (!file) return 'Escolha um arquivo para enviar.'
   const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
-  if (!ACCEPTED_EXTENSIONS.includes(ext)) return 'Este formato não é aceito. Envie um arquivo PDF, DOCX, TXT ou MD.'
+  const legacy = LEGACY_EXTENSIONS[ext]
+  if (legacy) return `Arquivos .${ext} são de um formato antigo. Abra no ${legacy.app}, salve como .${legacy.to} e envie de novo.`
+  if (!ACCEPTED_EXTENSIONS.includes(ext)) return `Este formato não é aceito. Envie um arquivo ${FORMATS_LABEL}.`
   if (file.size > MAX_FILE_BYTES) return 'Este arquivo tem mais de 20 MB. Envie um arquivo menor.'
   if (file.size === 0) return 'Este arquivo está vazio. Escolha outro.'
   return null

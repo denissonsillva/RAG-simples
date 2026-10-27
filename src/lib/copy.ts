@@ -11,7 +11,13 @@ export const statusLabel: Record<DocumentStatus, string> = {
 export function friendlyDocumentError(raw?: string): string {
   const r = (raw ?? '').toLowerCase()
   if (r.includes('nenhum texto')) {
-    return 'Não conseguimos ler o texto deste arquivo. Se for um PDF, ele pode ser uma imagem escaneada. Envie uma versão em texto.'
+    return 'Não encontramos texto neste arquivo. Se for um PDF, ele pode ser uma imagem escaneada. Envie uma versão em texto.'
+  }
+  if (r.includes('formato antigo')) {
+    return 'Este arquivo está em um formato antigo que não conseguimos ler. Abra-o no Excel, PowerPoint ou Word, salve no formato novo (.xlsx, .pptx ou .docx) e envie de novo.'
+  }
+  if (r.includes('corrompido')) {
+    return 'Não conseguimos abrir este arquivo. Ele pode estar danificado. Tente salvá-lo de novo e enviar outra vez.'
   }
   if (r.includes('tempo esgotado')) {
     return 'A preparação demorou mais do que o esperado. Toque em “Processar de novo”.'
