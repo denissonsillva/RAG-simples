@@ -103,6 +103,14 @@ Falta de `OPENAI_API_KEY` vira `failed` com mensagem clara; o motivo aparece ao 
 
 ---
 
+# Design
+
+A identidade visual (azul `#44A8FF`, Geist, tema claro e escuro, linguagem para leigos) está descrita e justificada em [docs/plano-de-melhoria-de-design.md](docs/plano-de-melhoria-de-design.md). Em resumo:
+
+- Cores e tema em `src/index.css` (tokens) e `src/app/theme/` (claro, escuro ou igual ao dispositivo, com script anti-flash no `index.html`).
+- Textos que a pessoa lê, incluindo mensagens de erro, em `src/lib/copy.ts`.
+- Componentes novos em `src/components/ui/`: `alert`, `tooltip`, `progress`, `spinner`, `password-input`, `file-type-icon`.
+
 # Operação
 
 **Deploy das funções** (qualquer um): pelo MCP do Supabase (`deploy_edge_function`) ou `supabase functions deploy process-document search-documents`. Ambas usam `verify_jwt = true`.

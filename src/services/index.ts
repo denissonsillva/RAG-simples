@@ -8,4 +8,5 @@ export const authService = supabaseAuthService
 export const documentService = supabaseDocumentService
 export const searchService = supabaseSearchService
 
+export { EmailConfirmationRequiredError } from './auth.service'
 export type * from './types'

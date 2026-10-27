@@ -7,35 +7,35 @@ export const ACCEPTED_EXTENSIONS = ['pdf', 'docx', 'txt', 'md']
 export const uploadSchema = z
   .object({
     chunkSize: z
-      .number({ error: 'Informe um número.' })
-      .int('Use um número inteiro.')
-      .min(100, 'Mínimo de 100.')
-      .max(4000, 'Máximo de 4000.'),
+      .number({ error: 'Digite um número.' })
+      .int('Use um número inteiro, sem vírgula.')
+      .min(100, 'O mínimo é 100.')
+      .max(4000, 'O máximo é 4000.'),
     overlap: z
       .number({ error: 'Informe um número.' })
       .int('Use um número inteiro.')
-      .min(0, 'Não pode ser negativa.'),
+      .min(0, 'Use 0 ou mais.'),
   })
   .refine((v) => v.overlap < v.chunkSize, {
     path: ['overlap'],
-    message: 'Deve ser menor que o tamanho do chunk.',
+    message: 'A repetição precisa ser menor que o tamanho do trecho.',
   })
 
 export type UploadFormValues = z.infer<typeof uploadSchema>
 
 export function validateFile(file: File | null): string | null {
-  if (!file) return 'Selecione um arquivo.'
+  if (!file) return 'Escolha um arquivo para enviar.'
   const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
-  if (!ACCEPTED_EXTENSIONS.includes(ext)) return 'Formato não aceito. Use PDF, DOCX, TXT ou MD.'
-  if (file.size > MAX_FILE_BYTES) return 'O arquivo passa de 20 MB.'
-  if (file.size === 0) return 'O arquivo está vazio.'
+  if (!ACCEPTED_EXTENSIONS.includes(ext)) return 'Este formato não é aceito. Envie um arquivo PDF, DOCX, TXT ou MD.'
+  if (file.size > MAX_FILE_BYTES) return 'Este arquivo tem mais de 20 MB. Envie um arquivo menor.'
+  if (file.size === 0) return 'Este arquivo está vazio. Escolha outro.'
   return null
 }
 
 export const strategyOptions: { value: ChunkStrategy; label: string; hint: string }[] = [
-  { value: 'fixed', label: 'Tamanho fixo', hint: 'Corta o texto a cada N caracteres.' },
-  { value: 'paragraph', label: 'Por parágrafo', hint: 'Respeita quebras de parágrafo.' },
-  { value: 'semantic', label: 'Semântico', hint: 'Agrupa trechos por assunto.' },
+  { value: 'fixed', label: 'Em partes iguais', hint: 'Corta o texto em pedaços do mesmo tamanho, mesmo no meio de uma frase.' },
+  { value: 'paragraph', label: 'Respeitando parágrafos', hint: 'Junta parágrafos inteiros até chegar ao tamanho escolhido.' },
+  { value: 'semantic', label: 'Agrupando frases', hint: 'Junta frases seguidas até chegar ao tamanho escolhido, sem cortar uma frase ao meio.' },
 ]
 
 export interface ChunkPreset {
@@ -50,24 +50,24 @@ export interface ChunkPreset {
 export const chunkPresets: ChunkPreset[] = [
   {
     id: 'long',
-    label: 'Documento longo',
-    description: 'Relatórios, livros, contratos. Chunks grandes preservam contexto entre parágrafos.',
+    label: 'Textos longos',
+    description: 'Relatórios, livros e contratos. Trechos grandes guardam mais contexto.',
     strategy: 'paragraph',
     chunkSize: 1000,
     overlapPercent: 15,
   },
   {
     id: 'technical',
-    label: 'Técnico',
-    description: 'Documentação e manuais. Respeita títulos e seções, com sobreposição maior.',
+    label: 'Manuais e documentação',
+    description: 'Guias e instruções. Trechos médios, com mais repetição para não perder o fio.',
     strategy: 'paragraph',
     chunkSize: 500,
     overlapPercent: 20,
   },
   {
     id: 'conversational',
-    label: 'Conversacional',
-    description: 'FAQs, transcrições, tickets. Chunks curtos para respostas pontuais.',
+    label: 'Perguntas e respostas',
+    description: 'FAQs, transcrições e chamados. Trechos curtos para respostas diretas.',
     strategy: 'fixed',
     chunkSize: 300,
     overlapPercent: 10,
@@ -77,7 +77,7 @@ export const chunkPresets: ChunkPreset[] = [
 export const presetOverlap = (p: ChunkPreset) => Math.round((p.chunkSize * p.overlapPercent) / 100)
 
 const SAMPLE_SENTENCE =
-  'Exemplo de texto para pré-visualização. Arquivos PDF e DOCX só têm o texto extraído no servidor, então o preview usa este conteúdo de exemplo para mostrar o efeito do tamanho do chunk e da sobreposição. '
+  'Este é um texto de exemplo para mostrar como o seu documento será dividido. O texto real do arquivo só é lido depois do envio, mas a divisão segue as mesmas regras que você escolher aqui. '
 
 export const PREVIEW_TEXT = SAMPLE_SENTENCE.repeat(12).trim()
 const CHARS_PER_TOKEN = 4
@@ -97,3 +97,6 @@ export function previewChunks(chunkSize: number, overlap: number): { text: strin
   }
   return chunks
 }
+
+/** 1 token ≈ ¾ de palavra (média para português). Usado só para explicar tamanhos a quem não conhece "tokens". */
+export const tokensToWords = (tokens: number) => Math.round(tokens * 0.75)
