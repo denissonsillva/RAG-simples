@@ -54,7 +54,7 @@ export function SearchPage() {
     <>
       <PageHeader title={searchCopy.title} description={searchCopy.description} />
 
-      <form onSubmit={onSubmit} className="mb-8 max-w-3xl space-y-3" role="search">
+      <form onSubmit={onSubmit} className="mb-8 space-y-3" role="search">
         <div className="flex flex-wrap gap-2 sm:flex-nowrap">
           <div className="relative flex-1 basis-full sm:basis-0">
             <Search
@@ -96,7 +96,7 @@ export function SearchPage() {
         </div>
       </form>
 
-      <div className="max-w-3xl space-y-4" aria-live="polite">
+      <div className="space-y-4" aria-live="polite">
         {search.isPending && (
           <div className="space-y-3" aria-busy="true">
             <p className="sr-only" role="status">

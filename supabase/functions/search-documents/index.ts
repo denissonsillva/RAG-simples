@@ -12,7 +12,18 @@ const cors = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } })
 
-async function embed(input: string, apiKey: string): Promise<number[]> {
+// Só o service role grava em usage_events; o cliente do usuário (anon + JWT) não tem esse acesso.
+const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+
+/** Registra o consumo de uma busca. Falhar aqui nunca pode derrubar a busca. */
+async function logUsage(userId: string | undefined, tokens: number) {
+  const { error } = await admin
+    .from('usage_events')
+    .insert({ user_id: userId ?? null, kind: 'search', model: EMBEDDING_MODEL, tokens })
+  if (error) console.error('usage_events', error.message)
+}
+
+async function embed(input: string, apiKey: string): Promise<{ vector: number[]; tokens: number }> {
   const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -22,7 +33,8 @@ async function embed(input: string, apiKey: string): Promise<number[]> {
     const detail = await res.json().catch(() => null)
     throw new Error(`OpenAI ${res.status}: ${detail?.error?.message ?? 'falha ao gerar embedding'}`)
   }
-  return (await res.json()).data[0].embedding
+  const body = await res.json()
+  return { vector: body.data[0].embedding, tokens: body.usage?.total_tokens ?? 0 }
 }
 
 Deno.serve(async (req) => {
@@ -44,9 +56,12 @@ Deno.serve(async (req) => {
   })
 
   try {
-    const embedding = await embed(query, apiKey)
+    const { vector, tokens } = await embed(query, apiKey)
+    // Sem sessão persistida dentro da função, o JWT precisa ir explícito.
+    const { data: userData } = await supabase.auth.getUser(req.headers.get('Authorization')?.replace('Bearer ', '') ?? '')
+    await logUsage(userData.user?.id, tokens)
     const { data, error } = await supabase.rpc('match_chunks', {
-      query_embedding: JSON.stringify(embedding),
+      query_embedding: JSON.stringify(vector),
       match_count: topK,
     })
     if (error) throw new Error(error.message)

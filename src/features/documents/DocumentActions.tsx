@@ -50,7 +50,7 @@ export function DocumentActions({ name, isOwner, processing, onReprocess, onDele
       <IconAction
         label={`Processar de novo "${name}"`}
         disabled={!isOwner || processing}
-        disabledReason={!isOwner ? documentsCopy.onlyOwnerReprocess : 'Este documento já está sendo preparado.'}
+        disabledReason={!isOwner ? documentsCopy.onlyOwnerReprocess : 'Este documento já está sendo processado.'}
         onClick={onReprocess}
         icon={<RefreshCw className="size-5" aria-hidden />}
       />

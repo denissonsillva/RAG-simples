@@ -1,4 +1,4 @@
-import { FileText, Search, Upload } from 'lucide-react'
+import { CircleDollarSign, FileText, Search, Upload } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { Logo } from '@/components/layout/Logo'
 import { SkipLink } from '@/components/layout/SkipLink'
@@ -10,6 +10,7 @@ const navItems = [
   { to: '/documentos', label: 'Documentos', icon: FileText, end: true },
   { to: '/documentos/novo', label: 'Upload', icon: Upload, end: true },
   { to: '/busca', label: 'Busca', icon: Search, end: true },
+  { to: '/custos', label: 'Custos', icon: CircleDollarSign, end: true },
 ]
 
 export function AppShell() {
@@ -47,7 +48,7 @@ export function AppShell() {
           <UserMenu />
         </header>
         <main id="conteudo" tabIndex={-1} className="flex-1 p-4 outline-none md:p-8">
-          <div className="mx-auto w-full max-w-5xl">
+          <div className="mx-auto w-full max-w-7xl">
             <Outlet />
           </div>
         </main>

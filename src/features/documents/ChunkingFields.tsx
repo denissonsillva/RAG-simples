@@ -57,10 +57,10 @@ export function ChunkingFields({
     <div className="space-y-4">
       <div className="space-y-1">
         <h2 id="chunking-title" className="text-lg font-semibold">
-          2. Como dividir o texto
+          2. Configurar chunking
         </h2>
         <p className="text-muted-foreground">
-          A busca encontra trechos do seu documento. Trechos menores dão respostas mais precisas; trechos maiores
+          A busca encontra chunks do seu documento. Chunks menores dão respostas mais precisas; chunks maiores
           guardam mais contexto. Se não tiver certeza, use “Textos longos”.
         </p>
       </div>
@@ -87,7 +87,7 @@ export function ChunkingFields({
               </span>
               <span className="text-sm text-muted-foreground">{preset.description}</span>
               <span className="mt-auto pt-2 text-[0.8125rem] text-muted-foreground tabular-nums">
-                {words(preset.chunkSize)} por trecho · repete {preset.overlapPercent}%
+                {words(preset.chunkSize)} por chunk · overlap {preset.overlapPercent}%
               </span>
             </button>
           )
@@ -110,7 +110,7 @@ export function ChunkingFields({
         </button>
 
         <div id="chunking-advanced" hidden={!advancedOpen} className="mt-3 space-y-4">
-          <FormField id="strategy" label="Jeito de dividir" hint={current?.hint}>
+          <FormField id="strategy" label="Estratégia de chunking" hint={current?.hint}>
             <Select value={strategy} items={items} onValueChange={(v) => v && onStrategyChange(v as ChunkStrategy)}>
               <SelectTrigger id="strategy" className="w-full">
                 <SelectValue />
@@ -128,7 +128,7 @@ export function ChunkingFields({
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               id="chunkSize"
-              label="Tamanho de cada trecho"
+              label="Chunk size"
               hint={`Medido em tokens (1 token ≈ ¾ de palavra). Agora: ${words(chunkSize)}.`}
               error={errors.chunkSize?.message}
             >
@@ -136,8 +136,8 @@ export function ChunkingFields({
             </FormField>
             <FormField
               id="overlap"
-              label="Repetição entre trechos"
-              hint={`O final de um trecho se repete no começo do próximo, para não perder o contexto. Agora: ${words(overlap)}.`}
+              label="Overlap"
+              hint={`O final de um chunk se repete no começo do próximo, para não perder o contexto. Agora: ${words(overlap)}.`}
               error={errors.overlap?.message}
             >
               <Input id="overlap" type="number" inputMode="numeric" autoComplete="off" {...register('overlap', { valueAsNumber: true })} />
@@ -148,7 +148,7 @@ export function ChunkingFields({
 
       <div className="space-y-2 border-t pt-3">
         <div>
-          <h3 className="font-medium">Como o texto será dividido</h3>
+          <h3 className="font-medium">Prévia do chunking</h3>
           <p className="text-[0.8125rem] text-muted-foreground">
             Exemplo ilustrativo. O texto do seu arquivo só é lido depois do envio.
           </p>
@@ -158,11 +158,11 @@ export function ChunkingFields({
         ) : (
           <>
             <p className="text-sm text-muted-foreground tabular-nums">
-              {chunks.length} {chunks.length === 1 ? 'trecho' : 'trechos'} no exemplo · em média {words(avgTokens)}
+              {chunks.length} {chunks.length === 1 ? 'chunk' : 'chunks'} no exemplo · em média {words(avgTokens)}
             </p>
             <div className="rounded-xl border bg-muted/50 p-4">
               <p className="mb-1 text-[0.8125rem] font-medium text-muted-foreground">
-                Trecho 1 · {words(chunks[0].tokens)}
+                Chunk 1 · {words(chunks[0].tokens)}
               </p>
               <p className="line-clamp-4">{chunks[0].text}</p>
             </div>

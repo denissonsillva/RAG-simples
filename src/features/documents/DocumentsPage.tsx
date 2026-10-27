@@ -134,7 +134,7 @@ export function DocumentsPage() {
                   <div className="flex items-center gap-7">
                     {doc.status === 'ready' && (
                       <span className="hidden text-sm text-muted-foreground tabular-nums sm:inline">
-                        {doc.chunkCount} {doc.chunkCount === 1 ? 'trecho' : 'trechos'}
+                        {doc.chunkCount} {doc.chunkCount === 1 ? 'chunk' : 'chunks'}
                       </span>
                     )}
                     <StatusBadge status={doc.status} />
