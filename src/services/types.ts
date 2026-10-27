@@ -20,8 +20,10 @@ export interface Document {
   mimeType: string
   sizeBytes: number
   uploadedBy: string
+  uploadedById?: string
   uploadedAt: string
   status: DocumentStatus
+  error?: string
   chunking: ChunkingConfig
   chunkCount: number
 }

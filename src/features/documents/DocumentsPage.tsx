@@ -1,4 +1,4 @@
-import { FileText, Trash2, Upload } from 'lucide-react'
+import { FileText, RefreshCw, Trash2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -26,13 +26,22 @@ import {
 } from '@/components/ui/table'
 import { fileTypeLabel, formatBytes, formatDate } from '@/lib/format'
 import type { Document } from '@/services'
-import { useDeleteDocument, useDocuments } from './hooks'
+import { useAuth } from '@/features/auth/useAuth'
+import { useDeleteDocument, useDocuments, useReprocessDocument } from './hooks'
 import { StatusBadge } from './StatusBadge'
 
 export function DocumentsPage() {
   const { data, isLoading, isError, refetch } = useDocuments()
   const deleteDocument = useDeleteDocument()
+  const reprocessDocument = useReprocessDocument()
+  const { user } = useAuth()
   const [toDelete, setToDelete] = useState<Document | null>(null)
+
+  const reprocess = ({ id, name }: Document) =>
+    reprocessDocument.mutate(id, {
+      onSuccess: () => toast.success(`Reprocessando "${name}".`),
+      onError: (e) => toast.error(e.message),
+    })
 
   const confirmDelete = () => {
     if (!toDelete) return
@@ -96,7 +105,7 @@ export function DocumentsPage() {
                 <TableHead>Enviado por</TableHead>
                 <TableHead>Data</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-10">
+                <TableHead className="w-20">
                   <span className="sr-only">Ações</span>
                 </TableHead>
               </TableRow>
@@ -115,13 +124,25 @@ export function DocumentsPage() {
                   <TableCell>{doc.uploadedBy}</TableCell>
                   <TableCell className="whitespace-nowrap">{formatDate(doc.uploadedAt)}</TableCell>
                   <TableCell>
-                    <StatusBadge status={doc.status} />
+                    <StatusBadge status={doc.status} error={doc.error} />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={`Reprocessar ${doc.name}`}
+                      title={doc.uploadedById === user?.id ? 'Reprocessar' : 'Só quem enviou pode reprocessar'}
+                      disabled={doc.uploadedById !== user?.id || doc.status === 'processing'}
+                      onClick={() => reprocess(doc)}
+                    >
+                      <RefreshCw aria-hidden />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Excluir ${doc.name}`}
+                      title={doc.uploadedById === user?.id ? 'Excluir' : 'Só quem enviou pode excluir'}
+                      disabled={doc.uploadedById !== user?.id}
                       onClick={() => setToDelete(doc)}
                     >
                       <Trash2 aria-hidden />

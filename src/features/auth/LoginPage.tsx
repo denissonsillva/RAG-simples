@@ -63,9 +63,6 @@ export function LoginPage() {
           Cadastre-se
         </Link>
       </p>
-      <p className="rounded-lg bg-muted px-3 py-2 text-center text-xs text-muted-foreground">
-        Conta de exemplo: ana@exemplo.com / senha123
-      </p>
     </div>
   )
 }

@@ -8,10 +8,10 @@ const config = {
   failed: { label: 'Falhou', variant: 'destructive', icon: XCircle, spin: false },
 } as const
 
-export function StatusBadge({ status }: { status: DocumentStatus }) {
+export function StatusBadge({ status, error }: { status: DocumentStatus; error?: string }) {
   const { label, variant, icon: Icon, spin } = config[status]
   return (
-    <Badge variant={variant}>
+    <Badge variant={variant} title={error}>
       <Icon className={spin ? 'animate-spin' : undefined} aria-hidden />
       {label}
     </Badge>

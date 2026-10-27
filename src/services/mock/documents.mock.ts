@@ -67,6 +67,11 @@ export const mockDocumentService: DocumentService = {
     return doc
   },
 
+  async reprocess(id) {
+    await delay()
+    writeJson('documents', loadDocuments().map((d) => (d.id === id ? { ...d, status: 'ready' as const } : d)))
+  },
+
   async remove(id) {
     await delay()
     writeJson('documents', loadDocuments().filter((d) => d.id !== id))
