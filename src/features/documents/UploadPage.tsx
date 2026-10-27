@@ -87,7 +87,7 @@ export function UploadPage() {
       {
         onSuccess: () => {
           sent.current = true
-          toast.success(`“${file.name}” foi enviado. Estamos preparando o documento para a busca.`)
+          toast.success(`“${file.name}” foi enviado. Estamos processando o documento para a busca.`)
           navigate('/documentos')
         },
         onError: () => toast.error('Não conseguimos enviar o documento. Confira sua conexão e tente de novo.'),
@@ -99,9 +99,9 @@ export function UploadPage() {
     <>
       <PageHeader
         title="Enviar documento"
-        description="Escolha o arquivo e diga como o texto deve ser dividido para a busca."
+        description="Escolha o arquivo e configure o chunking usado na busca."
       />
-      <Card className="max-w-3xl">
+      <Card>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-8" noValidate>
             <section className="space-y-3" aria-labelledby="file-title">

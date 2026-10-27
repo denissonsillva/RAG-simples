@@ -25,7 +25,7 @@ export const uploadSchema = z
   })
   .refine((v) => v.overlap < v.chunkSize, {
     path: ['overlap'],
-    message: 'A repetição precisa ser menor que o tamanho do trecho.',
+    message: 'O overlap precisa ser menor que o chunk size.',
   })
 
 export type UploadFormValues = z.infer<typeof uploadSchema>
@@ -42,9 +42,9 @@ export function validateFile(file: File | null): string | null {
 }
 
 export const strategyOptions: { value: ChunkStrategy; label: string; hint: string }[] = [
-  { value: 'fixed', label: 'Em partes iguais', hint: 'Corta o texto em pedaços do mesmo tamanho, mesmo no meio de uma frase.' },
-  { value: 'paragraph', label: 'Respeitando parágrafos', hint: 'Junta parágrafos inteiros até chegar ao tamanho escolhido.' },
-  { value: 'semantic', label: 'Agrupando frases', hint: 'Junta frases seguidas até chegar ao tamanho escolhido, sem cortar uma frase ao meio.' },
+  { value: 'fixed', label: 'Tamanho fixo', hint: 'Corta o texto em chunks do mesmo tamanho, mesmo no meio de uma frase.' },
+  { value: 'paragraph', label: 'Por parágrafo', hint: 'Junta parágrafos inteiros até chegar ao tamanho escolhido.' },
+  { value: 'semantic', label: 'Por frases', hint: 'Junta frases seguidas até chegar ao tamanho escolhido, sem cortar uma frase ao meio.' },
 ]
 
 export interface ChunkPreset {
@@ -60,7 +60,7 @@ export const chunkPresets: ChunkPreset[] = [
   {
     id: 'long',
     label: 'Textos longos',
-    description: 'Relatórios, livros e contratos. Trechos grandes guardam mais contexto.',
+    description: 'Relatórios, livros e contratos. Chunks grandes guardam mais contexto.',
     strategy: 'paragraph',
     chunkSize: 1000,
     overlapPercent: 15,
@@ -68,7 +68,7 @@ export const chunkPresets: ChunkPreset[] = [
   {
     id: 'technical',
     label: 'Manuais e documentação',
-    description: 'Guias e instruções. Trechos médios, com mais repetição para não perder o fio.',
+    description: 'Guias e instruções. Chunks médios, com mais overlap para não perder o fio.',
     strategy: 'paragraph',
     chunkSize: 500,
     overlapPercent: 20,
@@ -76,7 +76,7 @@ export const chunkPresets: ChunkPreset[] = [
   {
     id: 'conversational',
     label: 'Perguntas e respostas',
-    description: 'FAQs, transcrições e chamados. Trechos curtos para respostas diretas.',
+    description: 'FAQs, transcrições e chamados. Chunks curtos para respostas diretas.',
     strategy: 'fixed',
     chunkSize: 300,
     overlapPercent: 10,

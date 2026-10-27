@@ -48,7 +48,7 @@ export function AppShell() {
           <UserMenu />
         </header>
         <main id="conteudo" tabIndex={-1} className="flex-1 p-4 outline-none md:p-8">
-          <div className="mx-auto w-full max-w-5xl">
+          <div className="mx-auto w-full max-w-7xl">
             <Outlet />
           </div>
         </main>

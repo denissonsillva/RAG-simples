@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { relevanceLevel } from '@/lib/copy'
 
-/** A nota numérica não diz nada a quem não conhece o assunto; a etiqueta diz. */
+/** Score de similaridade do chunk com a pergunta; a cor indica a faixa. */
 export function RelevanceBadge({ score }: { score: number }) {
   const { label, tone } = relevanceLevel(score)
   return (

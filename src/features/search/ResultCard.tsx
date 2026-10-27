@@ -40,7 +40,7 @@ function highlight(text: string, query: string) {
 
 export function ResultCard({ result, query }: { result: SearchResult; query: string }) {
   const [expanded, setExpanded] = useState(false)
-  const bodyId = `trecho-${result.chunkId}`
+  const bodyId = `chunk-${result.chunkId}`
 
   return (
     <Card>
