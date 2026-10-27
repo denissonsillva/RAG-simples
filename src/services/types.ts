@@ -46,3 +46,30 @@ export interface SignInInput {
   email: string
   password: string
 }
+
+export type UsageKind = 'indexing' | 'search'
+export type UsageScope = 'all' | 'mine'
+
+/** Consumo de um dia (data local, AAAA-MM-DD) para um tipo de uso. */
+export interface UsageDay {
+  day: string
+  kind: UsageKind
+  tokens: number
+  costUsd: number
+}
+
+export interface UserUsage {
+  userId: string | null
+  name: string
+  email: string
+  tokens: number
+  costUsd: number
+  indexingCostUsd: number
+  searchCostUsd: number
+}
+
+/** Intervalo [from, to) em ISO. */
+export interface UsageRange {
+  from: string
+  to: string
+}

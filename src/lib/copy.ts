@@ -72,3 +72,46 @@ export function relevanceLevel(score: number): { label: string; tone: 'success' 
   if (score >= 0.4) return { label: 'Relevante', tone: 'info' }
   return { label: 'Pouco relevante', tone: 'outline' }
 }
+
+export const costsCopy = {
+  title: 'Custos',
+  description: 'Quanto a preparação dos documentos e as buscas gastam com a IA (OpenAI), e como isso muda ao longo do tempo.',
+  loadError: 'Não conseguimos carregar os custos. Verifique sua conexão e tente de novo.',
+  scope: { all: 'Geral', mine: 'Meu consumo' },
+  period: { '7d': '7 dias', '30d': '30 dias', month: 'Este mês' },
+  budget: {
+    title: (month: string) => `Orçamento de ${month}`,
+    spentOf: (spent: string, budget: string) => `${spent} de ${budget}`,
+    projection: (value: string) => `Se o ritmo continuar, o mês termina em ${value}.`,
+    level: { ok: 'Dentro do limite', warning: 'Perto do limite', over: 'Limite ultrapassado' },
+    unsetAdmin: 'Defina quanto você aceita gastar por mês. Avisamos aqui quando chegar perto.',
+    unsetUser: 'O orçamento do mês ainda não foi definido por um administrador.',
+    label: 'Orçamento mensal (US$)',
+    save: 'Salvar',
+    edit: 'Alterar',
+    cancel: 'Cancelar',
+    invalid: 'Digite um valor em dólar, como 10 ou 7,50.',
+    saved: 'Orçamento salvo.',
+  },
+  cards: { cost: 'Custo total', tokens: 'Tokens usados', indexing: 'Vetorização de documentos', search: 'Vetorização de buscas' },
+  chart: {
+    title: 'Gasto por dia',
+    indexing: 'Vetorização de documentos',
+    search: 'Vetorização de buscas',
+    peak: (day: string, value: string, ratio: string) => `Pico em ${day}: ${value}, cerca de ${ratio} vezes a média dos dias anteriores.`,
+    noPeak: 'Nenhum pico no período.',
+  },
+  users: {
+    title: 'Custo por usuário',
+    name: 'Usuário',
+    indexing: 'Documentos',
+    search: 'Buscas',
+    tokens: 'Tokens',
+    total: 'Total',
+    empty: 'Nenhum uso registrado neste período.',
+  },
+  empty: {
+    title: 'Ainda não há consumo registrado',
+    body: 'Os custos aparecem a partir do momento em que um documento é preparado ou uma busca é feita.',
+  },
+}

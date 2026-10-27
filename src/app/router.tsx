@@ -4,6 +4,7 @@ import { AuthLayout } from '@/components/layout/AuthLayout'
 import { ProtectedRoute, PublicOnlyRoute } from '@/components/layout/RouteGuards'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { SignupPage } from '@/features/auth/SignupPage'
+import { CostsPage } from '@/features/costs/CostsPage'
 import { DocumentsPage } from '@/features/documents/DocumentsPage'
 import { UploadPage } from '@/features/documents/UploadPage'
 import { SearchPage } from '@/features/search/SearchPage'
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
           { path: '/documentos', element: <DocumentsPage /> },
           { path: '/documentos/novo', element: <UploadPage /> },
           { path: '/busca', element: <SearchPage /> },
+          { path: '/custos', element: <CostsPage /> },
         ],
       },
     ],

@@ -70,7 +70,13 @@ function chunk(text: string, strategy: Strategy, sizeTokens: number, overlapToke
 
 // ---------- embeddings ----------
 
-async function embed(inputs: string[], apiKey: string): Promise<number[][]> {
+/** Registra o consumo de uma chamada. Falhar aqui nunca pode derrubar a indexação. */
+async function logUsage(row: { user_id: string; document_id: string; tokens: number }) {
+  const { error } = await admin.from('usage_events').insert({ ...row, kind: 'indexing', model: EMBEDDING_MODEL })
+  if (error) console.error('usage_events', error.message)
+}
+
+async function embed(inputs: string[], apiKey: string): Promise<{ vectors: number[][]; tokens: number }> {
   const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -81,7 +87,10 @@ async function embed(inputs: string[], apiKey: string): Promise<number[][]> {
     throw new Error(`OpenAI ${res.status}: ${detail?.error?.message ?? 'falha ao gerar embeddings'}`)
   }
   const body = await res.json()
-  return body.data.sort((a: { index: number }, b: { index: number }) => a.index - b.index).map((d: { embedding: number[] }) => d.embedding)
+  const vectors = body.data
+    .sort((a: { index: number }, b: { index: number }) => a.index - b.index)
+    .map((d: { embedding: number[] }) => d.embedding)
+  return { vectors, tokens: body.usage?.total_tokens ?? 0 }
 }
 
 // ---------- pipeline ----------
@@ -102,7 +111,9 @@ async function processDocument(doc: Record<string, any>) {
     await admin.from('document_chunks').delete().eq('document_id', doc.id) // reprocessamento idempotente
     for (let i = 0; i < chunks.length; i += EMBED_BATCH) {
       const batch = chunks.slice(i, i + EMBED_BATCH)
-      const vectors = await embed(batch, apiKey)
+      const { vectors, tokens } = await embed(batch, apiKey)
+      // Os tokens já foram cobrados pela OpenAI mesmo que a indexação falhe depois: registra já.
+      await logUsage({ user_id: doc.uploaded_by, document_id: doc.id, tokens })
       const rows = batch.map((content, j) => ({
         document_id: doc.id,
         chunk_index: i + j,
