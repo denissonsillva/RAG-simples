@@ -131,7 +131,7 @@ export function DocumentsPage() {
                       {formatBytes(doc.sizeBytes)} · enviado por {doc.uploadedBy} · {formatDate(doc.uploadedAt)}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-7">
                     {doc.status === 'ready' && (
                       <span className="hidden text-sm text-muted-foreground tabular-nums sm:inline">
                         {doc.chunkCount} {doc.chunkCount === 1 ? 'trecho' : 'trechos'}
