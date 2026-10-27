@@ -4,7 +4,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#F6F9FC" />
     <title>RAG Docs</title>
+    <script>
+      // Aplica o tema antes da primeira pintura para não piscar. Mantenha em sincronia com src/app/theme.
+      (function () {
+        try {
+          var t = localStorage.getItem('rag-theme');
+          var dark = t === 'dark' || ((t === null || t === 'system') && matchMedia('(prefers-color-scheme: dark)').matches);
+          var root = document.documentElement;
+          root.classList.toggle('dark', dark);
+          root.style.colorScheme = dark ? 'dark' : 'light';
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#0E141B' : '#F6F9FC');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
