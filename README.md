@@ -113,6 +113,8 @@ A identidade visual (azul `#44A8FF`, Geist, tema claro e escuro, linguagem para 
 
 # Operação
 
+**Deploy do site (Cloudflare Workers):** rode `npm run deploy` (faz o build e o `wrangler deploy`). O build precisa rodar na sua máquina, onde está o `.env.local` com as variáveis `VITE_SUPABASE_*`. **Não publique arrastando a pasta `dist` no painel da Cloudflare**: esse upload ignora o `wrangler.jsonc`, perde o fallback de SPA e todas as rotas (exceto `/`) passam a dar 404 ao recarregar a página.
+
 **Deploy das funções** (qualquer um): pelo MCP do Supabase (`deploy_edge_function`) ou `supabase functions deploy process-document search-documents`. Ambas usam `verify_jwt = true`.
 
 **Migrações:** já aplicadas no projeto (`list_migrations`); não há pasta `supabase/migrations` no repositório ainda.
