@@ -1,19 +1,21 @@
-import { CheckCircle2, Loader2, XCircle } from 'lucide-react'
+import { CheckCircle2, XCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Spinner } from '@/components/ui/spinner'
+import { statusLabel } from '@/lib/copy'
 import type { DocumentStatus } from '@/services'
 
 const config = {
-  processing: { label: 'Processando', variant: 'secondary', icon: Loader2, spin: true },
-  ready: { label: 'Pronto', variant: 'default', icon: CheckCircle2, spin: false },
-  failed: { label: 'Falhou', variant: 'destructive', icon: XCircle, spin: false },
+  processing: { variant: 'info', icon: <Spinner className="size-3.5" /> },
+  ready: { variant: 'success', icon: <CheckCircle2 aria-hidden /> },
+  failed: { variant: 'destructive', icon: <XCircle aria-hidden /> },
 } as const
 
 export function StatusBadge({ status }: { status: DocumentStatus }) {
-  const { label, variant, icon: Icon, spin } = config[status]
+  const { variant, icon } = config[status]
   return (
     <Badge variant={variant}>
-      <Icon className={spin ? 'animate-spin' : undefined} aria-hidden />
-      {label}
+      {icon}
+      {statusLabel[status]}
     </Badge>
   )
 }

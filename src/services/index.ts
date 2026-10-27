@@ -1,11 +1,12 @@
 // Único ponto que escolhe a implementação dos serviços.
-// Para integrar o Supabase, troque os imports abaixo por ./supabase/*.
-import { mockAuthService } from './mock/auth.mock'
-import { mockDocumentService } from './mock/documents.mock'
-import { mockSearchService } from './mock/search.mock'
+// Tudo usa Supabase (Auth, documentos, busca). Os mocks em ./mock ficam só como referência da fase 1.
+import { supabaseAuthService } from './supabase/auth.supabase'
+import { supabaseDocumentService } from './supabase/documents.supabase'
+import { supabaseSearchService } from './supabase/search.supabase'
 
-export const authService = mockAuthService
-export const documentService = mockDocumentService
-export const searchService = mockSearchService
+export const authService = supabaseAuthService
+export const documentService = supabaseDocumentService
+export const searchService = supabaseSearchService
 
+export { EmailConfirmationRequiredError } from './auth.service'
 export type * from './types'

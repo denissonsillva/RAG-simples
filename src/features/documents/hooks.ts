@@ -22,6 +22,15 @@ export function useUploadDocument() {
   })
 }
 
+export function useReprocessDocument() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => documentService.reprocess(id),
+    // sucesso ou erro, o status real está no banco
+    onSettled: () => queryClient.invalidateQueries({ queryKey: documentsKey }),
+  })
+}
+
 export function useDeleteDocument() {
   const queryClient = useQueryClient()
   return useMutation({

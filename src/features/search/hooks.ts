@@ -3,6 +3,6 @@ import { searchService } from '@/services'
 
 export function useSearch() {
   return useMutation({
-    mutationFn: (query: string) => searchService.search(query, 5),
+    mutationFn: ({ query, topK }: { query: string; topK: number }) => searchService.search(query, topK),
   })
 }
